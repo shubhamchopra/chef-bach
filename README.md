@@ -1,26 +1,15 @@
 Overview
 ========
 
+BACH (Bloomberg Automated Cluster for Hadoop)
+-- We compose clusters! --
+
 This is a set of [Chef](https://github.com/opscode/chef) cookbooks to bring up
-an [OpenStack](http://www.openstack.org) or [Hadoop](http://hadoop.apache.org/)
-cluster. In addition to hosting virtual machines, there are a number of
-additional services provided with these cookbooks - such as distributed
-storage, DNS, log aggregation/search, and monitoring - see below for a partial
-list of services provided by these cookbooks.
-
-OpenStack
----------
-
-Each OpenStack head node runs all of the core services in a highly-available
-manner with no restriction upon how many head nodes there are.  The cluster
-is deemed operational as long as 50%+1 of the head nodes are online. 
-Otherwise, a network partition may occur with a split-brain scenario. 
-In practice, we currently recommend roughly one head node per rack.
-
-Each worker node runs the relevant services (nova-compute, Ceph OSDs, etc.).
-There is no limitation on the number of worker nodes.  In practice, we
-currently recommend that the cluster should not grow to more than 200 worker
-nodes.
+automated compute clusters. Particularly, the design is built around
+[Hadoop](http://hadoop.apache.org/) clusters. In addition to hosting hadoop,
+there are a number of additional services provided with these cookbooks -
+such as OS provisioning, storage configuration, DNS, and monitoring - see below
+for a partial list of services provided by these cookbooks.
 
 Hadoop
 ------
@@ -50,7 +39,7 @@ To setup HDFS HA, please follow the following model from your Bootstrap VM:
 Setup
 =====
 
-These recipes are currently intended for building a BCPC cloud on top of
+These recipes are currently intended for building a BACH cloud on top of
 Ubuntu 12.04 servers using Chef 11. When setting this up in VMs, be sure to
 add a few dedicated disks (for ceph OSDs) aside from boot volume. In
 addition, it's expected that you have three separate NICs per machine, with
@@ -65,8 +54,8 @@ and tweak accordingly for your setup (by adding them to an environment file).
 Cluster Bootstrap
 -----------------
 
-The provided scripts which sets up a Chef and Cobbler server via
-[Vagrant](http://www.vagrantup.com/) permits imaging of the cluster via PXE.
+The provided scripts sets up a Chef and Cobbler server via [Vagrant](http://www.vagrantup.com/)
+which permits imaging of the cluster via PXE.
 
 Once the Chef server is set up, you can bootstrap any number of nodes to get
 them registered with the Chef server for your environment - see the next
@@ -75,7 +64,7 @@ section for enrolling the nodes.
 Make a cluster
 --------------
 
-To build a new BCPC cluster, you have to start with building a head nodes
+To build a new BACH cluster, you have to start with building a head node
 first. (This assumes that you have already completed the bootstrap process and
 have a Chef server available.)  Since the recipes will automatically generate
 all passwords and keys for this new cluster, the nodes must temporarily become
@@ -83,7 +72,7 @@ all passwords and keys for this new cluster, the nodes must temporarily become
 to a databag.  The databag will be called ``configs`` and the databag item will
 be the same name as the environment (``Test-Laptop`` in this example). You only
 need to leave the node as an ``admin`` for the first chef-client run. You can
-also manually create the databag & item (as per the example in
+also manually create the databag and items (as per the example in
 ``data_bags/configs/Example.json``) and manually upload it if you'd rather not
 bother with the whole ``admin`` thing for the first run.
 
@@ -95,43 +84,11 @@ one can run through what is the expected "happy-path" install. This simple
 install supports only changing DNS, proxy and VM resource settings. (This is
 the basis of our automated build tests.)
 
-Using an OpenStack cluster
---------------------------
-
-Once the nodes are configured and bootstrapped, BCPC services will be
-accessible via the floating IP.  (For the Test-Laptop environment, it is
-10.0.100.5.)
-
-For example, you can go to ``https://10.0.100.5/horizon/`` for the OpenStack
-web interface.  To find the automatically-generated OpenStack credentials, look
-in the data bag for your environment under ``keystone-admin-user`` and
-``keystone-admin-password``:
-
-```
-ubuntu@bcpc-bootstrap:~$ knife data bag show configs Test-Laptop | grep keystone-admin
-keystone-admin-password:       abcdefgh
-keystone-admin-token:          this-is-my-token
-keystone-admin-user:           admin
-
-```
-
-For example, to check on ``Ceph``:
-
-```
-ubuntu@bcpc-vm1:~$ ceph -s
-   health HEALTH_OK
-   monmap e1: 1 mons at {bcpc-vm1=172.16.100.11:6789/0}, election epoch 2, quorum 0 bcpc-vm1
-   osdmap e94: 12 osds: 12 up, 12 in
-    pgmap v705: 2192 pgs: 2192 active+clean; 80333 KB data, 729 MB used, 227 GB / 227 GB avail
-   mdsmap e4: 1/1/1 up {0=bcpc-vm1=up:active}
-```
-
-BCPC Services
+BACH Services
 -------------
 
-BCPC currently relies upon a number of open-source packages:
+BACH currently relies upon a number of open-source packages:
 
- - [389 Directory Server](http://directory.fedoraproject.org/)
  - [Apache Bigtop](http://bigtop.apache.org/)
  - [Apache Hadoop](http://hadoop.apache.org/)
  - [Apache HBase](http://hbase.apache.org/)
@@ -146,19 +103,16 @@ BCPC currently relies upon a number of open-source packages:
  - [Chef](http://www.getchef.com/chef/)
  - [Cobbler](http://www.cobblerd.org/)
  - [Diamond](https://github.com/BrightcoveOS/Diamond)
- - [ElasticSearch](http://www.elasticsearch.org/)
  - [Etherboot](http://etherboot.org/)
  - [Fluentd](http://fluentd.org/)
  - [Graphite](http://graphite.readthedocs.org/en/latest/)
  - [HAProxy](http://haproxy.1wt.eu/)
  - [Keepalived](http://www.keepalived.org/)
- - [Kibana](http://kibana.org/)
- - [OpenStack](http://www.openstack.org/)
  - [Percona XtraDB Cluster](http://www.percona.com/software/percona-xtradb-cluster)
  - [PowerDNS](https://www.powerdns.com/)
  - [RabbitMQ](http://www.rabbitmq.com/)
  - [Ubuntu](http://www.ubuntu.com/)
- - [Vagrant](http://www.vagrantup.com/) - Verified with version 1.2.2
+ - [Vagrant](http://www.vagrantup.com/) - Verified with version 1.6+
  - [VirtualBox](https://www.virtualbox.org/) - >= 4.3.x supported
  - [Zabbix](http://www.zabbix.com/)
 
