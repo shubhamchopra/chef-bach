@@ -5,6 +5,7 @@
     "json_class": "Chef::Role",
     "run_list": [
       "recipe[bcpc::graphite_handler]",
+      "role[BCPC-OpenStack-Client]",
       "recipe[apt]",
       "recipe[ubuntu]",
       "recipe[ntp]",
