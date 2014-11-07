@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# This script expects to be run in the chef-bcpc directory
+# This script expects to be run in the chef-bach directory
 #
 
 set -e
@@ -20,13 +20,13 @@ if [[ -z "$CURL" ]]; then
   exit
 fi
 
-if [[ ! -f /etc/apt/sources.list.d/bcpc.list ]]; then
+if [[ ! -f /etc/apt/sources.list.d/bach.list ]]; then
   # Create an Apt repo entry
-  echo "deb [arch=amd64] file://$(pwd)/bins/ 0.5.0 main" > /etc/apt/sources.list.d/bcpc.list
+  echo "deb [arch=amd64] file://$(pwd)/bins/ 0.5.0 main" > /etc/apt/sources.list.d/bach.list
   # add repo key
   apt-key add bins/apt_key.pub
   # update only the BCPC local repo
-  apt-get -o Dir::Etc::SourceList=/etc/apt/sources.list.d/bcpc.list,Dir::Etc::SourceParts= update
+  apt-get -o Dir::Etc::SourceList=/etc/apt/sources.list.d/bach.list,Dir::Etc::SourceParts= update
 fi
 
 if dpkg -s chef 2>/dev/null | grep -q ^Status.*installed && \
@@ -63,11 +63,11 @@ fi
 
 ./build_bins.sh
 
-if [[ ! -f /etc/apt/sources.list.d/bcpc.list ]]; then
+if [[ ! -f /etc/apt/sources.list.d/bach.list ]]; then
   # Create an Apt repo entry
-  echo "deb [arch=amd64] file://$(pwd)/bins/ 0.5.0 main" > /etc/apt/sources.list.d/bcpc.list
+  echo "deb [arch=amd64] file://$(pwd)/bins/ 0.5.0 main" > /etc/apt/sources.list.d/bach.list
   # add repo key
   apt-key add bins/apt_key.pub
   # update only the BCPC local repo
-  apt-get -o Dir::Etc::SourceList=/etc/apt/sources.list.d/bcpc.list,Dir::Etc::SourceParts= update
+  apt-get -o Dir::Etc::SourceList=/etc/apt/sources.list.d/bach.list,Dir::Etc::SourceParts= update
 fi

@@ -50,9 +50,9 @@ printf "#### Cobbler Boot\n"
 printf "Snapshotting pre-Cobbler and booting (unless already running)\n"
 vms_started="False"
 for i in 1 2 3; do
-  vboxmanage showvminfo bcpc-vm$i | grep -q '^State:.*running' || vms_started="True"
-  vboxmanage showvminfo bcpc-vm$i | grep -q '^State:.*running' || VBoxManage snapshot bcpc-vm$i take Shoe-less
-  vboxmanage showvminfo bcpc-vm$i | grep -q '^State:.*running' || VBoxManage startvm bcpc-vm$i --type headless
+  vboxmanage showvminfo bach-vm$i | grep -q '^State:.*running' || vms_started="True"
+  vboxmanage showvminfo bach-vm$i | grep -q '^State:.*running' || VBoxManage snapshot bach-vm$i take Shoe-less
+  vboxmanage showvminfo bach-vm$i | grep -q '^State:.*running' || VBoxManage startvm bach-vm$i --type headless
 done
 
 printf "Checking VMs are up: \n"
@@ -69,19 +69,19 @@ do
 done
 
 printf "Snapshotting post-Cobbler\n"
-[[ "$vms_started" == "True" ]] && VBoxManage snapshot bcpc-vm1 take Post-Cobble
-[[ "$vms_started" == "True" ]] && VBoxManage snapshot bcpc-vm2 take Post-Cobble
-[[ "$vms_started" == "True" ]] && VBoxManage snapshot bcpc-vm3 take Post-Cobble
+[[ "$vms_started" == "True" ]] && VBoxManage snapshot bach-vm1 take Post-Cobble
+[[ "$vms_started" == "True" ]] && VBoxManage snapshot bach-vm2 take Post-Cobble
+[[ "$vms_started" == "True" ]] && VBoxManage snapshot bach-vm3 take Post-Cobble
 
 printf "#### Chef all the nodes\n"
 vagrant ssh -c "sudo apt-get install -y sshpass"
 
 for i in 1 2 3; do
-  printf "#### Chef machine bcpc-vm${i}\n"
-  vagrant ssh -c "cd chef-bcpc; ./cluster-assign-roles.sh $ENVIRONMENT Hadoop bcpc-vm$i"
+  printf "#### Chef machine bach-vm${i}\n"
+  vagrant ssh -c "cd chef-bach; ./cluster-assign-roles.sh $ENVIRONMENT Hadoop bach-vm$i"
 done
 
 printf "Snapshotting post-Cobbler\n"
-VBoxManage snapshot bcpc-vm1 take Full-Shoes
-VBoxManage snapshot bcpc-vm2 take Full-Shoes
-VBoxManage snapshot bcpc-vm3 take Full-Shoes
+VBoxManage snapshot bach-vm1 take Full-Shoes
+VBoxManage snapshot bach-vm2 take Full-Shoes
+VBoxManage snapshot bach-vm3 take Full-Shoes

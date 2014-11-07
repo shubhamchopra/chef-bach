@@ -15,19 +15,19 @@ set -e
 if [[ $# -gt 1 ]]; then
   KEYFILE="bootstrap_chef.id_rsa"
   IP="$2"
-  BCPC_DIR="chef-bcpc"
+  BCPC_DIR="chef-bach"
   VAGRANT=""
   # override the ssh-user and keyfile if using Vagrant
   if [[ $1 == "--vagrant-local" ]]; then
     echo "Running on the local Vagrant VM"
     VAGRANT="true"
-    BCPC_DIR="~vagrant/chef-bcpc"
+    BCPC_DIR="~vagrant/chef-bach"
     SSH_USER="$USER"
     SSH_CMD="bash -c"
   elif [[ $1 == "--vagrant-remote" ]]; then
     echo "SSHing to the Vagrant VM"
     VAGRANT="true"
-    BCPC_DIR="~vagrant/chef-bcpc"
+    BCPC_DIR="~vagrant/chef-bach"
     SSH_USER="vagrant"
     SSH_CMD="vagrant ssh -c"
   else
@@ -61,11 +61,11 @@ if [[ -z $VAGRANT ]]; then
     ssh-keygen -N "" -f $KEYFILE
   fi
   echo "Running rsync of non-Vagrant install"
-  rsync  $RSYNCEXTRA -avP -e "ssh -i $KEYFILE" --exclude vbox --exclude $KEYFILE --exclude .chef . ${SSH_USER}@$IP:chef-bcpc 
+  rsync  $RSYNCEXTRA -avP -e "ssh -i $KEYFILE" --exclude vbox --exclude $KEYFILE --exclude .chef . ${SSH_USER}@$IP:chef-bach 
   $SSH_CMD "cd $BCPC_DIR && ./setup_ssh_keys.sh ${KEYFILE}.pub"
 else
   echo "Running rsync of Vagrant install"
-  $SSH_CMD "rsync $RSYNCEXTRA -avP --exclude vbox --exclude .chef /chef-bcpc-host/ /home/vagrant/chef-bcpc/"
+  $SSH_CMD "rsync $RSYNCEXTRA -avP --exclude vbox --exclude .chef /chef-bach-host/ /home/vagrant/chef-bach/"
 fi
 
 

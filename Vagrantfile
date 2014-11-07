@@ -12,13 +12,13 @@ $local_mirror = nil
 Vagrant.configure("2") do |config|
 
   config.vm.define :bootstrap do |bootstrap|
-    bootstrap.vm.hostname = "bcpc-bootstrap"
+    bootstrap.vm.hostname = "bach-bootstrap"
 
     bootstrap.vm.network :private_network, ip: "10.0.100.3", netmask: "255.255.255.0", adapter_ip: "10.0.100.2"
     bootstrap.vm.network :private_network, ip: "172.16.100.3", netmask: "255.255.255.0", adapter_ip: "172.16.100.2"
     bootstrap.vm.network :private_network, ip: "192.168.100.3", netmask: "255.255.255.0", adapter_ip: "192.168.100.2"
 
-    bootstrap.vm.synced_folder "../", "/chef-bcpc-host"
+    bootstrap.vm.synced_folder "../", "/chef-bach-host"
 
     # set up repositories
     if $local_mirror then
@@ -33,11 +33,11 @@ Vagrant.configure("2") do |config|
     # machine itself, we can't use Vagrant's built-in chef provisioning.
     # We actually prefer to do this in vbox_create.sh as we do some fixups
     # and register our VMs in cobbler after we're done.
-    #bootstrap.vm.provision :shell, :inline => "/chef-bcpc-host/bootstrap_chef.sh --vagrant-local 10.0.100.3 #{$local_environment}"
+    #bootstrap.vm.provision :shell, :inline => "/chef-bach-host/bootstrap_chef.sh --vagrant-local 10.0.100.3 #{$local_environment}"
   end
 
   #config.vm.define :mirror do |mirror|
-  #  mirror.vm.hostname = "bcpc-mirror-vagrant"
+  #  mirror.vm.hostname = "bach-mirror-vagrant"
   #
   #  mirror.vm.network :private_network, ip: "10.0.100.4", netmask: "255.255.255.0", adapter_ip: "10.0.100.2"
   #  mirror.vm.network :private_network, ip: "172.16.100.4", netmask: "255.255.255.0", adapter_ip: "172.16.100.2"
@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider :virtualbox do |vb|
      # Don't boot with headless mode
      vb.gui = true
-     vb.name = "bcpc-bootstrap"
+     vb.name = "bach-bootstrap"
      vb.customize ["modifyvm", :id, "--nictype2", "82543GC"]
      vb.customize ["modifyvm", :id, "--memory", memory]
      vb.customize ["modifyvm", :id, "--cpus", cpus]

@@ -34,33 +34,33 @@ end
 sudo 'cluster-interaction' do
   user      node[:bcpc][:bootstrap][:admin_users] * ','
   runas     'vagrant'
-  commands  ['/home/vagrant/chef-bcpc/cluster-assign-roles.sh','/home/vagrant/chef-bcpc/nodessh.sh','/usr/bin/knife']
+  commands  ['/home/vagrant/chef-bach/cluster-assign-roles.sh','/home/vagrant/chef-bach/nodessh.sh','/usr/bin/knife']
   only_if { node[:bcpc][:bootstrap][:admin_users].length >= 1 }
 end
 
 bash 'create repo' do
   user 'vagrant'
-  code 'git clone --bare /home/vagrant/chef-bcpc /home/vagrant/chef-bcpc-repo && cd /home/vagrant/chef-bcpc-repo && git config core.sharedRepository true'
-  not_if { File.exists?('/home/vagrant/chef-bcpc-repo') }
+  code 'git clone --bare /home/vagrant/chef-bach /home/vagrant/chef-bach-repo && cd /home/vagrant/chef-bach-repo && git config core.sharedRepository true'
+  not_if { File.exists?('/home/vagrant/chef-bach-repo') }
 end
 
 bash 'set repo as origin' do
   user 'vagrant'
-  cwd '/home/vagrant/chef-bcpc/'
-  code 'git remote add local /home/vagrant/chef-bcpc-repo'
-  not_if 'git remote -v |grep -q "^local	"', :cwd => '/home/vagrant/chef-bcpc/'
+  cwd '/home/vagrant/chef-bach/'
+  code 'git remote add local /home/vagrant/chef-bach-repo'
+  not_if 'git remote -v |grep -q "^local	"', :cwd => '/home/vagrant/chef-bach/'
 end
 
 package 'acl'
 
-bash 'Update chef-bcpc-repo rights' do
-  code 'setfacl -R -m g:vagrant:rwX /home/vagrant/chef-bcpc-repo; find /home/vagrant/chef-bcpc-repo -type d | xargs setfacl -R -m d:g:vagrant:rwX'
+bash 'Update chef-bach-repo rights' do
+  code 'setfacl -R -m g:vagrant:rwX /home/vagrant/chef-bach-repo; find /home/vagrant/chef-bach-repo -type d | xargs setfacl -R -m d:g:vagrant:rwX'
 end
 
 cron 'synchronize chef' do
   user  'vagrant'
   home '/home/vagrant'
-  command "cd ~/chef-bcpc; git pull local hadoop_hortonworks; knife role from file roles/*.json; knife cookbook upload -a; knife environment from file environments/#{node.chef_environment}.json"
+  command "cd ~/chef-bach; git pull local hadoop_hortonworks; knife role from file roles/*.json; knife cookbook upload -a; knife environment from file environments/#{node.chef_environment}.json"
 end
 
 package 'sshpass'

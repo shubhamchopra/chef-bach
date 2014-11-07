@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# Expected to be run in the root of the Chef Git repository (e.g. chef-bcpc)
+# Expected to be run in the root of the Chef Git repository (e.g. chef-bach)
 
 set -x
 

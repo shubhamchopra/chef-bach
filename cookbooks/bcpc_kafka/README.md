@@ -1,1 +1,1 @@
-Cookbook to complete prerequisites for setting up chef-bcpc specific Kafka Cluster
+Cookbook to complete prerequisites for setting up chef-bach specific Kafka Cluster
