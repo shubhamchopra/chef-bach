@@ -1,4 +1,4 @@
-include_recipe 'bcpc-hadoop::hbase_config'
+include_recipe 'bcpc_hadoop::hbase_config'
 
 %w{hbase-regionserver libsnappy1}.each do |pkg|
   package pkg do

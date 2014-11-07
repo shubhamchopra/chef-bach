@@ -1,14 +1,14 @@
 {
-  "name": "BCPC-Hadoop-Head-HBase",
+  "name": "Hadoop-Head-HBase",
   "json_class": "Chef::Role",
   "run_list": [
     "role[Basic]",
-    "role[BCPC-Hadoop-Head]",
-    "recipe[bcpc-hadoop::hbase_master]",
-    "recipe[bcpc_jmxtrans]",
+    "role[Hadoop-Head]",
+    "recipe[hadoop::hbase_master]",
+    "recipe[jmxtrans_wrapper]",
     "recipe[bcpc::diamond]"
   ],
-  "description": "A highly-available head node in a BCPC Hadoop cluster",
+  "description": "HBase head node in a Hadoop cluster",
   "chef_type": "role",
   "default_attributes" : {
     "jmxtrans":  {

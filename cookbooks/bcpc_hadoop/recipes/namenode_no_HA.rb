@@ -1,7 +1,7 @@
 include_recipe 'dpkg_autostart'
 require "base64"
 
-include_recipe 'bcpc-hadoop::hadoop_config'
+include_recipe 'bcpc_hadoop::hadoop_config'
 
 %w{hadoop-hdfs-namenode}.each do |pkg|
   dpkg_autostart pkg do

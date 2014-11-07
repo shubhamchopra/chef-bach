@@ -1,6 +1,5 @@
-
 include_recipe 'dpkg_autostart'
-include_recipe 'bcpc-hadoop::zookeeper_config'
+include_recipe 'bcpc_hadoop::zookeeper_config'
 dpkg_autostart "zookeeper-server" do
   allow false
 end

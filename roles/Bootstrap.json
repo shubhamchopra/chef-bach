@@ -1,5 +1,5 @@
 {
-    "name": "BCPC-Bootstrap",
+    "name": "Bootstrap",
     "default_attributes": {
     },
     "json_class": "Chef::Role",
@@ -12,7 +12,7 @@
       "recipe[bcpc::cobbler-centos]",
       "recipe[bcpc::bootstrap]"
     ],
-    "description": "A bootstrap node in a BCPC cluster",
+    "description": "A bootstrap node in a cluster",
     "chef_type": "role",
     "override_attributes": {
     }

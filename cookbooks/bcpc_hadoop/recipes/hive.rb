@@ -1,4 +1,4 @@
-include_recipe "bcpc-hadoop::hive_config"
+include_recipe "bcpc_hadoop::hive_config"
 
 # workaround for hcatalog dpkg not creating the hcat user it requires
 user "hcat" do 

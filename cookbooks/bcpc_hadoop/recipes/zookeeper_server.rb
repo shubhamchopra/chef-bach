@@ -1,1 +1,1 @@
-include_recipe "bcpc-hadoop::zookeeper_impl"
+include_recipe "bcpc_hadoop::zookeeper_impl"

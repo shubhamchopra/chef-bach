@@ -1,4 +1,4 @@
-include_recipe 'bcpc-hadoop::hadoop_config'
+include_recipe 'bcpc_hadoop::hadoop_config'
 
 %w{hadoop-mapreduce-historyserver}.each do |pkg|
   package pkg do

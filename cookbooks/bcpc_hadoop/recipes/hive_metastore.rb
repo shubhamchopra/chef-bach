@@ -1,4 +1,4 @@
-include_recipe "bcpc-hadoop::hive_config"
+include_recipe "bcpc_hadoop::hive_config"
 
 %w{hive-metastore libmysql-java}.each do |pkg|
   package pkg do

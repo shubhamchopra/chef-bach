@@ -1,25 +1,25 @@
 {
-  "name": "BCPC-Hadoop-Worker",
+  "name": "Hadoop-Worker",
   "json_class": "Chef::Role",
   "run_list": [
     "role[Basic]",
     "recipe[bcpc::default]",
-    "recipe[bcpc-hadoop::default]",
+    "recipe[hadoop::default]",
     "recipe[bcpc::networking]",
-    "recipe[bcpc-hadoop::disks]",
-    "recipe[bcpc-hadoop::hdp_repo]",
-    "recipe[bcpc-hadoop::configs]",
+    "recipe[hadoop::disks]",
+    "recipe[hadoop::hdp_repo]",
+    "recipe[hadoop::configs]",
     "recipe[pam::default]",
-    "recipe[bcpc-hadoop::datanode]",
-    "recipe[bcpc-hadoop::httpfs]",
-    "recipe[bcpc-hadoop::region_server]",
-    "recipe[bcpc-hadoop::pig]",
-    "recipe[bcpc-hadoop::mahout]",
+    "recipe[hadoop::datanode]",
+    "recipe[hadoop::httpfs]",
+    "recipe[hadoop::region_server]",
+    "recipe[hadoop::pig]",
+    "recipe[hadoop::mahout]",
     "recipe[bcpc::zabbix-work]",
     "recipe[bcpc::diamond]",
-    "recipe[bcpc_jmxtrans]"
+    "recipe[jmxtrans_wrapper]"
   ],
-  "description": "A highly-available head node in a BCPC Hadoop cluster",
+  "description": "A worker node in a Hadoop cluster",
   "chef_type": "role",
   "default_attributes" : {
     "jmxtrans":  {

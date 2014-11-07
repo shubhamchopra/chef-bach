@@ -1,13 +1,13 @@
 {
-  "name": "BCPC-Hadoop-Head-Namenode",
+  "name": "Hadoop-Head-Namenode",
   "json_class": "Chef::Role",
   "run_list": [
     "role[Basic]",
-    "role[BCPC-Hadoop-Head]",
-    "recipe[bcpc-hadoop::namenode_master]",
-    "recipe[bcpc_jmxtrans]"
+    "role[Hadoop-Head]",
+    "recipe[hadoop::namenode_master]",
+    "recipe[jmxtrans_wrapper]"
   ],
-  "description": "A highly-available head node in a BCPC Hadoop cluster",
+  "description": "A highly-available Namenode head node in a Hadoop cluster",
   "chef_type": "role",
   "default_attributes" : {
     "jmxtrans":  {

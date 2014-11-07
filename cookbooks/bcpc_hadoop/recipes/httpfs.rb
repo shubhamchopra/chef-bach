@@ -1,5 +1,5 @@
-include_recipe 'bcpc-hadoop::hadoop_config'
-include_recipe 'bcpc-hadoop::httpfs_config'
+include_recipe 'bcpc_hadoop::hadoop_config'
+include_recipe 'bcpc_hadoop::httpfs_config'
 
 package "hadoop-httpfs" do
   action :upgrade

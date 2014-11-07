@@ -1,20 +1,20 @@
 {
-  "name": "BCPC-Kafka-Head-Server",
+  "name": "Kafka-Head-Server",
   "json_class": "Chef::Role",
   "run_list": [
     "role[Basic]",
     "recipe[bcpc::default]",
     "recipe[bcpc::networking]",
-    "recipe[bcpc-hadoop::disks]",
-    "recipe[bcpc-hadoop::default]",
-    "recipe[kafka-bcpc::default]", 
-    "recipe[kafka-bcpc::setattr]",
+    "recipe[hadoop::disks]",
+    "recipe[hadoop::default]",
+    "recipe[kafka_wrapper::default]", 
+    "recipe[kafka_wrapper::setattr]",
     "recipe[java::oracle]", 
     "recipe[kafka::default]",
-    "recipe[bcpc_jmxtrans]",
-    "recipe[kafka-bcpc::kafka]",
+    "recipe[jmxtrans_wrapper]",
+    "recipe[kafka_wrapper::kafka]",
     "recipe[bcpc::diamond]",
-    "recipe[bcpc_jmxtrans]"
+    "recipe[jmxtrans_wrapper]"
   ],
   "description": "Role to setup Kafka Server",
   "chef_type": "role",
