@@ -25,9 +25,9 @@ ifs=node[:network][:interfaces].keys
 # create a hash of ipaddresses
 ips= ifs.map{|a|node[:network][:interfaces][a][:addresses]}.reduce({}, :merge)
 
-# select the Ohai IP address if we have only one non-loopback IP address 
-node.set['bcpc']['management']['ip'] = node["ipaddress"] if ips.select {|ip,v| v['family'] == "inet" and
-                                                                        scope = "Global"}.length == 1
+# select the fixed IP if we are on OpenStack
+node.set['bcpc']['management']['ip'] = node['openstack']['local_ipv4'] if node['openstack']['local_ipv4']
+
 # select the first IP address which is on the management network skip the VIP if we have more
 # than one address
 node.set['bcpc']['management']['ip'] = ips.select {|ip,v| v['family'] == "inet" and
