@@ -78,10 +78,12 @@ ruby_block "verify Hadoop mounts" do
   end
 end
 
+mount_root = node["bcpc"]["storage"]["disks"]["mount_root"]
+
 ruby_block "Create Datanode Directories" do
   block do
     node[:bcpc][:hadoop][:mounts].each_index do |i|
-      ["/disk/#{i}/dfs", "/disk/#{i}/dfs/dn"].each do |d|
+      ["#{mount_root}/#{i}/dfs", "#{mount_root}/#{i}/dfs/dn"].each do |d|
         dir = Chef::Resource::Directory.new(d, run_context)
         dir.owner "hdfs"
         dir.group "hdfs"
@@ -95,14 +97,14 @@ end
 ruby_block "Create Nodemanager Directories" do
   block do
     node[:bcpc][:hadoop][:mounts].each_index do |i|
-      dir = Chef::Resource::Directory.new("/disk/#{i}/yarn/", run_context)
+      dir = Chef::Resource::Directory.new("#{mount_root}/#{i}/yarn/", run_context)
       dir.owner "yarn"
       dir.group "yarn"
       dir.mode 0755
       dir.run_action :create
 
       %w{mapred-local local logs}.each do |d|
-        dir = Chef::Resource::Directory.new("/disk/#{i}/yarn/#{d}", run_context)
+        dir = Chef::Resource::Directory.new("#{mount_root}/#{i}/yarn/#{d}", run_context)
         dir.owner "yarn"
         dir.group "hadoop"
         dir.mode 0755

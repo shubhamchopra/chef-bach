@@ -1,7 +1,7 @@
 include_recipe 'dpkg_autostart'
 include_recipe 'bcpc-hadoop::hadoop_config'
 node[:bcpc][:hadoop][:mounts].each do |i|
-  directory "/disk/#{i}/yarn/local" do
+  directory "#{node["bcpc"]["storage"]["disks"]["mount_root"]}/#{i}/yarn/local" do
     owner "yarn"
     group "yarn"
     mode 0755
@@ -9,7 +9,7 @@ node[:bcpc][:hadoop][:mounts].each do |i|
     recursive true
   end
 
-  directory "/disk/#{i}/yarn/logs" do
+  directory "#{node["bcpc"]["storage"]["disks"]["mount_root"]}/#{i}/yarn/logs" do
     owner "yarn"
     group "yarn"
     mode 0755

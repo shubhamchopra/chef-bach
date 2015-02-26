@@ -36,6 +36,12 @@ default["bcpc"]["hadoop"]["kafka"]["jmx"]["port"] = 9995
 default["bcpc"]["hadoop"]["java"] = "/usr/lib/jvm/java-1.7.0-openjdk-amd64"
 default["bcpc"]["hadoop"]["topology"]["script"] = "topology"
 default["bcpc"]["hadoop"]["topology"]["cookbook"] = "bcpc-hadoop"
+default["bcpc"]["storage"]["disks"]["devices"] = []
+default["bcpc"]["storage"]["disks"]["mount_root"] = "/disk"
+default["bcpc"]["storage"]["fs"]["type"] = "xfs"
+default["bcpc"]["storage"]["fs"]["fstyp_string"]["xfs"] = "SGI XFS filesystem"
+default["bcpc"]["storage"]["fs"]["fstyp_string"]["ext4"] = "ext4 filesystem data"
+default["bcpc"]["storage"]["fs"]["mount_options"] = "noatime,nodiratime,inode64"
 #
 # Attributes for service rolling restart process
 #

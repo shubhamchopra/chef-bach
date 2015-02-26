@@ -2,6 +2,8 @@ include_recipe 'dpkg_autostart'
 require "base64"
 include_recipe 'bcpc-hadoop::hadoop_config'
 
+mount_root = node["bcpc"]["storage"]["disks"]["mount_root"]
+ 
 %w{hadoop-hdfs-namenode hadoop-hdfs-zkfc hadoop-mapreduce}.each do |pkg|
   dpkg_autostart pkg do
     allow false
@@ -14,7 +16,7 @@ end
 ruby_block "hadoop disks" do
   block do
     node[:bcpc][:hadoop][:mounts].each do |d|
-      dir = Chef::Resource::Directory.new("/disk/#{d}/dfs/nn", run_context)
+      dir = Chef::Resource::Directory.new("#{mount_root}/#{d}/dfs/nn", run_context)
       dir.owner "hdfs"
       dir.group "hdfs"
       dir.mode 0755
@@ -22,8 +24,8 @@ ruby_block "hadoop disks" do
       dir.run_action :create
 
       exe = Chef::Resource::Execute.new("fixup nn owner", run_context)
-      exe.command "chown -Rf hdfs:hdfs /disk/#{d}/dfs"
-      exe.only_if { Etc.getpwuid(File.stat("/disk/#{d}/dfs/").uid).name != "hdfs" }
+      exe.command "chown -Rf hdfs:hdfs #{mount_root}/#{d}/dfs"
+      exe.only_if { Etc.getpwuid(File.stat("#{mount_root}/#{d}/dfs/").uid).name != "hdfs" }
     end
   end
 end
@@ -32,8 +34,8 @@ bash "format namenode" do
   code "hdfs namenode -format -nonInteractive -force"
   user "hdfs"
   action :run
-  creates lazy "/disk/#{node[:bcpc][:hadoop][:mounts][0]}/dfs/nn/current/VERSION"
-  not_if { lazy { node[:bcpc][:hadoop][:mounts].any? { |d| File.exists?("/disk/#{d}/dfs/nn/current/VERSION") } } }
+  creates lazy "#{mount_root}/#{node[:bcpc][:hadoop][:mounts][0]}/dfs/nn/current/VERSION"
+  not_if { lazy { node[:bcpc][:hadoop][:mounts].any? { |d| File.exists?("#{mount_root}/#{d}/dfs/nn/current/VERSION") } } }
 end
 
 bash "format-zk-hdfs-ha" do
@@ -58,7 +60,7 @@ service "bring hadoop-hdfs-namenode down for shared edits and HA transition" do
   action :stop
   supports :status => true
   notifies :run, "bash[initialize-shared-edits]", :immediately
-  only_if { lazy { node[:bcpc][:hadoop][:mounts].all? { |d| not File.exists?("/disk/#{d}/dfs/jn/#{node.chef_environment}/current/VERSION") } } }
+  only_if { lazy { node[:bcpc][:hadoop][:mounts].all? { |d| not File.exists?("#{mount_root}/#{d}/dfs/jn/#{node.chef_environment}/current/VERSION") } } }
 end
 
 bash "initialize-shared-edits" do
@@ -87,14 +89,14 @@ end
 
 ruby_block "grab the format UUID File" do
   block do
-    Dir.chdir("/disk/#{node[:bcpc][:hadoop][:mounts][0]}/dfs/") do
+    Dir.chdir("#{mount_root}/#{node[:bcpc][:hadoop][:mounts][0]}/dfs/") do
       system("tar czvf #{Chef::Config[:file_cache_path]}/nn_fmt.tgz nn/current/VERSION jn/#{node.chef_environment}/current/VERSION")
     end
     make_config("namenode_txn_fmt", Base64.encode64(IO.read("#{Chef::Config[:file_cache_path]}/nn_fmt.tgz")));
   end
   action :nothing
   subscribes :run, "service[generally run hadoop-hdfs-namenode]", :immediately
-  only_if { lazy { File.exists?("/disk/#{node[:bcpc][:hadoop][:mounts][0]}/dfs/nn/current/VERSION") } }
+  only_if { lazy { File.exists?("#{mount_root}/#{node[:bcpc][:hadoop][:mounts][0]}/dfs/nn/current/VERSION") } }
 end
 
 bash "reload hdfs nodes" do
