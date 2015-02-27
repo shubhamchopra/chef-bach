@@ -30,15 +30,15 @@ ruby_block "create journalnode directories" do
       dir.owner "hdfs"
       dir.group "hdfs"
       dir.mode 0755
-      dir.run_action :create
       dir.recursive true
+      dir.run_action :create
 
       dir = Chef::Resource::Directory.new("#{mount_root}/#{d}/dfs/jn/#{node.chef_environment}", run_context)
       dir.owner "hdfs"
       dir.group "hdfs"
       dir.mode 0755
-      dir.run_action :create
       dir.recursive true
+      dir.run_action :create
 
       bash = Chef::Resource::Bash.new("unpack nn fmt image", run_context)
       bash.user "hdfs"
