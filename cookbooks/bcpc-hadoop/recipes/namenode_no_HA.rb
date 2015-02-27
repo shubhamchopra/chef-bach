@@ -21,7 +21,7 @@ ruby_block "create namenode directories" do
       dir.owner "hdfs"
       dir.group "hdfs"
       dir.mode 0755
-      dir.recursive "true"
+      dir.recursive true
       dir.run_action :create
 
       exe = Chef::Resource::Execute.new("fixup nn owner", run_context)
@@ -36,7 +36,7 @@ bash "format namenode" do
   user "hdfs"
   action :run
   creates lazy { "#{mount_root}/#{node[:bcpc][:storage][:mounts][0]}/dfs/nn/current/VERSION" }
-  not_if { lazy { node[:bcpc][:storage][:mounts].any? { |d| File.exists?("#{mount_root}/#{d}/dfs/nn/current/VERSION") } } }
+  not_if { lazy{node[:bcpc][:storage][:mounts]}.call.any? { |d| File.exists?("#{mount_root}/#{d}/dfs/nn/current/VERSION") } }
 end
 
 service "hadoop-hdfs-namenode" do

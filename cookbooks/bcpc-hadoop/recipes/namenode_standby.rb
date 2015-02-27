@@ -20,7 +20,7 @@ ruby_block "create namenode directories" do
       dir.owner "hdfs"
       dir.group "hdfs"
       dir.mode 0755
-      dir.recursive "true"
+      dir.recursive true
       dir.run_action :create
 
       exe = Chef::Resource::Execute.new("fixup nn owner", run_context)
@@ -36,7 +36,7 @@ if @node['bcpc']['hadoop']['hdfs']['HA'] == true then
     user "hdfs"
     cwd  "/var/lib/hadoop-hdfs"
     action :run
-    not_if { lazy { node[:bcpc][:storage][:mounts].all? { |d| Dir.entries("#{mount_root}/#{d}/dfs/nn/").include?("current") } } }
+    not_if { lazy {node[:bcpc][:storage][:mounts]}.call.all? { |d| Dir.entries("#{mount_root}/#{d}/dfs/nn/").include?("current") } }
   end  
 
   service "hadoop-hdfs-zkfc" do
