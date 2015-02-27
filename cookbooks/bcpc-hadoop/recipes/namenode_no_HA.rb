@@ -14,9 +14,9 @@ mount_root = node["bcpc"]["storage"]["disks"]["mount_root"]
   end
 end
 
-ruby_block "hadoop disks" do
+ruby_block "create namenode directories" do
   block do
-    node[:bcpc][:hadoop][:mounts].each do |d|
+    node[:bcpc][:storage][:mounts].each do |d|
       dir = Chef::Resource::Directory.new("#{mount_root}/#{d}/dfs/nn", run_context)
       dir.owner "hdfs"
       dir.group "hdfs"
@@ -35,8 +35,8 @@ bash "format namenode" do
   code "hdfs namenode -format -nonInteractive -force"
   user "hdfs"
   action :run
-  creates lazy { "#{mount_root}/#{node[:bcpc][:hadoop][:mounts][0]}/dfs/nn/current/VERSION" }
-  not_if { lazy { node[:bcpc][:hadoop][:mounts].any? { |d| File.exists?("#{mount_root}/#{d}/dfs/nn/current/VERSION") } } }
+  creates lazy { "#{mount_root}/#{node[:bcpc][:storage][:mounts][0]}/dfs/nn/current/VERSION" }
+  not_if { lazy { node[:bcpc][:storage][:mounts].any? { |d| File.exists?("#{mount_root}/#{d}/dfs/nn/current/VERSION") } } }
 end
 
 service "hadoop-hdfs-namenode" do

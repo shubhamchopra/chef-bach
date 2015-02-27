@@ -11,7 +11,6 @@ default["bcpc"]["hadoop"]["distribution"]["version"] = 'HDP'
 default["bcpc"]["hadoop"]["distribution"]["key"] = 'hortonworks.key'
 default["bcpc"]["repos"]["hortonworks"] = 'http://public-repo-1.hortonworks.com/HDP/ubuntu12/2.0.11.0'
 default["bcpc"]["repos"]["hdp_utils"] = 'http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.16/repos/ubuntu12'
-default["bcpc"]["hadoop"]["disks"] = []
 default["bcpc"]["hadoop"]["oozie"]["admins"] = []
 default["bcpc"]["hadoop"]["yarn"]["nodemanager"]["avail_memory"]["ratio"] = 0.8
 default["bcpc"]["hadoop"]["yarn"]["nodemanager"]["avail_memory"]["size"] = nil
@@ -36,12 +35,6 @@ default["bcpc"]["hadoop"]["kafka"]["jmx"]["port"] = 9995
 default["bcpc"]["hadoop"]["java"] = "/usr/lib/jvm/java-1.7.0-openjdk-amd64"
 default["bcpc"]["hadoop"]["topology"]["script"] = "topology"
 default["bcpc"]["hadoop"]["topology"]["cookbook"] = "bcpc-hadoop"
-default["bcpc"]["storage"]["disks"]["devices"] = []
-default["bcpc"]["storage"]["disks"]["mount_root"] = "/disk"
-default["bcpc"]["storage"]["fs"]["type"] = "xfs"
-default["bcpc"]["storage"]["fs"]["fstyp_string"]["xfs"] = "SGI XFS filesystem"
-default["bcpc"]["storage"]["fs"]["fstyp_string"]["ext4"] = "ext4 filesystem data"
-default["bcpc"]["storage"]["fs"]["mount_options"] = "noatime,nodiratime,inode64"
 #
 # Attributes for service rolling restart process
 #

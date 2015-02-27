@@ -2,39 +2,40 @@ package "xfsprogs" do
   action :install
 end
 
-directory "/disk" do
+directory node[:bcpc][:storage][:disks][:mount_root] do
   owner "root"
   group "root"
   mode 00755
   action :create
 end
 
-ruby_block "hadoop disks" do
+ruby_block "mount and create disks" do
   block do
-    if node[:bcpc][:hadoop][:disks].length > 0 then
-      node[:bcpc][:hadoop][:disks].each_index do |i|
-        dir = Chef::Resource::Directory.new("/disk/#{i}", run_context)
+    if node["bcpc"]["storage"]["disks"]["devices"].length > 0 then
+      node["bcpc"]["storage"]["disks"]["devices"].each_index do |i|
+        dir = Chef::Resource::Directory.new("#{node["bcpc"]["storage"]["disks"]["mount_root"]}/#{i}", run_context)
         dir.owner "root"
         dir.group "root"
         dir.mode 00755
         dir.recursive true
         dir.run_action :create
-   
-        d = node[:bcpc][:hadoop][:disks][i]
-        fs = Chef::Resource::Execute.new("mkfs -t xfs -f /dev/#{d}", run_context)
-        fs.not_if(command="file -s /dev/#{d} | grep -q 'SGI XFS filesystem'")
+ 
+        d = node[:bcpc][:storage][:disks][:devices][i]
+        fs_type = node["bcpc"]["storage"]["fs"]["type"] 
+        fs = Chef::Resource::Execute.new("mkfs -t #{fs_type} -f /dev/#{d}", run_context)
+        fs.not_if(command="file -s /dev/#{d} | grep -q '#{node["bcpc"]["storage"]["fs"]["fstyp_string"][fs_type]}'")
         fs.run_action :run
 
-        mount = Chef::Resource::Mount.new("/disk/#{i}", run_context)
+        mount = Chef::Resource::Mount.new("#{node["bcpc"]["storage"]["disks"]["mount_root"]}/#{i}", run_context)
         mount.device "/dev/#{d}"
-        mount.fstype "xfs"
-        mount.options "noatime,nodiratime,inode64"
+        mount.fstype fs_type
+        mount.options node["bcpc"]["storage"]["fs"]["mount_options"]
         mount.run_action :enable
         mount.run_action :mount
       end
-      node.set[:bcpc][:hadoop][:mounts] = (0..node[:bcpc][:hadoop][:disks].length-1).to_a
+      node.set[:bcpc][:storage][:mounts] = (0..node[:bcpc][:storage][:disks][:devices].length-1).to_a
     else
-      Chef::Application.fatal!('Please specify some node[:bcpc][:hadoop][:disks]!')
+      Chef::Application.fatal!('Please specify some node[:bcpc][:storage][:disks][:devices]!')
     end
   end
 end

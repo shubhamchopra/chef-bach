@@ -41,7 +41,7 @@ hadoop_conf_files.each do |t|
                :rm_hosts => node[:bcpc][:hadoop][:rm_hosts],
                :dn_hosts => node[:bcpc][:hadoop][:dn_hosts],
                :hs_hosts => node[:bcpc][:hadoop][:hs_hosts],
-               :mounts => node[:bcpc][:hadoop][:mounts])
+               :mounts => node[:bcpc][:storage][:mounts])
    end
 end
 
@@ -59,7 +59,7 @@ end
    variables(:nn_hosts => node[:bcpc][:hadoop][:nn_hosts],
              :zk_hosts => node[:bcpc][:hadoop][:zookeeper][:servers],
              :jn_hosts => node[:bcpc][:hadoop][:jn_hosts],
-             :mounts => node[:bcpc][:hadoop][:mounts],
+             :mounts => node[:bcpc][:storage][:mounts],
              :nn_jmx_port => node[:bcpc][:hadoop][:namenode][:jmx][:port],
              :dn_jmx_port => node[:bcpc][:hadoop][:datanode][:jmx][:port]
    )

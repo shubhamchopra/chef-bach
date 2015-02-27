@@ -13,9 +13,9 @@ mount_root = node["bcpc"]["storage"]["disks"]["mount_root"]
   end
 end
 
-ruby_block "hadoop disks" do
+ruby_block "create namenode directories" do
   block do
-    node[:bcpc][:hadoop][:mounts].each do |d|
+    node[:bcpc][:storage][:mounts].each do |d|
       dir = Chef::Resource::Directory.new("#{mount_root}/#{d}/dfs/nn", run_context)
       dir.owner "hdfs"
       dir.group "hdfs"
@@ -36,7 +36,7 @@ if @node['bcpc']['hadoop']['hdfs']['HA'] == true then
     user "hdfs"
     cwd  "/var/lib/hadoop-hdfs"
     action :run
-    not_if { lazy { node[:bcpc][:hadoop][:mounts].all? { |d| Dir.entries("#{mount_root}/#{d}/dfs/nn/").include?("current") } } }
+    not_if { lazy { node[:bcpc][:storage][:mounts].all? { |d| Dir.entries("#{mount_root}/#{d}/dfs/nn/").include?("current") } } }
   end  
 
   service "hadoop-hdfs-zkfc" do

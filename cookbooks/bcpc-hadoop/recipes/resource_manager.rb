@@ -1,6 +1,6 @@
 include_recipe 'dpkg_autostart'
 include_recipe 'bcpc-hadoop::hadoop_config'
-node[:bcpc][:hadoop][:mounts].each do |i|
+node[:bcpc][:storage][:mounts].each do |i|
   directory "#{node["bcpc"]["storage"]["disks"]["mount_root"]}/#{i}/yarn/local" do
     owner "yarn"
     group "yarn"

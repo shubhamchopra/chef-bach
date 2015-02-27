@@ -19,13 +19,13 @@ if get_config("namenode_txn_fmt") then
     group "hdfs"
     user 0644
     content Base64.decode64(get_config("namenode_txn_fmt"))
-    not_if { lazy { node[:bcpc][:hadoop][:mounts].all? { |d| File.exists?("#{mount_root}/#{d}/dfs/jn/#{node.chef_environment}/current/VERSION") } } }
+    not_if { lazy { node[:bcpc][:storage][:mounts].all? { |d| File.exists?("#{mount_root}/#{d}/dfs/jn/#{node.chef_environment}/current/VERSION") } } }
   end
 end
 
-ruby_block "hadoop disks" do
+ruby_block "create journalnode directories" do
   block do
-    node[:bcpc][:hadoop][:mounts].each do |d|
+    node[:bcpc][:storage][:mounts].each do |d|
       dir = Chef::Resource::Directory.new("#{mount_root}/#{d}/dfs/jn/", run_context)
       dir.owner "hdfs"
       dir.group "hdfs"
