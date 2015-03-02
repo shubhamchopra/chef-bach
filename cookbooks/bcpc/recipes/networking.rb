@@ -135,7 +135,7 @@ end
 
 bash "update resolvers" do
   code <<-EOH
-  echo "#{(resolvers.map{|r| 'nameserver #{r}'} + ['search #{node[:bcpc][:domain_name]}']).join('\n')}" | resolvconf -a #{node[:bcpc][:management][:interface]}.inet
+  echo "#{(resolvers.map{|r| "nameserver #{r}"} + ["search #{node[:bcpc][:domain_name]}"]).join('\n')}" | resolvconf -a #{node[:bcpc][:management][:interface]}.inet
   EOH
 end
 
