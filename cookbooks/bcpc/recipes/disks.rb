@@ -23,7 +23,7 @@ ruby_block "mount and create disks" do
  
         d = node[:bcpc][:storage][:disks][:devices][i]
         fs_type = node["bcpc"]["storage"]["fs"]["type"] 
-        fs = Chef::Resource::Execute.new("mkfs -t #{fs_type} -f /dev/#{d}", run_context)
+        fs = Chef::Resource::Execute.new("mkfs -t #{fs_type} #{node["bcpc"]["storage"]["fs"]["mkfs_options"]} /dev/#{d}", run_context)
         fs.not_if(command="file -s /dev/#{d} | grep -q '#{node["bcpc"]["storage"]["fs"]["fstyp_string"][fs_type]}'")
         fs.run_action :run
 
