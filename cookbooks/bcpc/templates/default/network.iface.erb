@@ -4,13 +4,45 @@
 #
 ################################################
 
+<% if @interface.kind_of?(Array) # Run for bonded NICs %>
+auto <%= @interface[0] %>
+iface <%= @interface[0] %> inet manual
+bond-master bond0
+
+auto <%= @interface[1] %>
+iface <%= @interface[1] %> inet manual
+bond-master bond0
+
+auto bond0
+iface bond0 inet static
+ address  <%= @ip %>
+ netmask <%= @netmask %>
+ gateway <%= @gateway %>
+ metric <%= @metric %>
+ <% if @dns %>
+ dns-nameservers <%= @dns.join(' ') %>
+ dns-search <%="#{node[:bcpc][:domain_name]}"%>
+ <% end %>
+ bond-mode 4
+ bond-miimon 100
+ bond-lacp-rate 1
+ bond-slaves <%= @interface.join(" ") %>
+ <% if @mtu %>
+ mtu <%= @mtu %>
+ <% end %>
+
+<% else # Run for single NIC %>
 auto <%= @interface %>
 iface <%= @interface %> inet static
  address <%= @ip %>
  netmask <%= @netmask %>
  gateway <%= @gateway %>
  metric <%= @metric %>
-<% if @dns %>
+ <% if @dns %>
  dns-nameservers <%= @dns.join(' ') %>
  dns-search <%="#{node[:bcpc][:domain_name]}"%>
+ <% end %>
+ <% if @mtu %>
+ mtu <%= @mtu %>
+ <% end %>
 <% end %>

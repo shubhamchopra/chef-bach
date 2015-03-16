@@ -23,7 +23,7 @@ mgmt_cidr = IPAddr.new(node['bcpc']['management']['cidr'])
 
 ifs=node[:network][:interfaces].keys
 # create a hash of ipaddresses
-ips= ifs.map{|a|node[:network][:interfaces][a][:addresses]}.reduce({}, :merge)
+ips= ifs.map{|a| node[:network][:interfaces][a][:addresses]}.reduce({}, :merge)
 
 # select the first IP address which is on the management network
 node.set['bcpc']['management']['ip'] = ips.select {|ip,v| v['family'] == "inet" and
