@@ -67,7 +67,10 @@
       "cache_path": "/var/chef/cache",
       "backup_path": "/var/chef/backup",
       "validation_client_name": "chef-validator",
-      "run_path": "/var/chef"
+      "run_path": "/var/chef",
+      "config": {
+        "verify_api_cert": false
+      }
     }
   },
   "json_class": "Chef::Environment",
