@@ -181,10 +181,24 @@ function hadoop_install {
   done
 
   printf "Installing workers...\n"
+  status_file=${TMPDIR:-/tmp}/status_file_$$
+  function clean_up_status_file {
+    rm -f $status_file
+  }
+  trap clean_up_status_file EXIT
+  tempfile -n $status_file
   for m in $(printf ${hosts// /\\n} | grep -i "BCPC-Hadoop-Worker" | sort); do
-    install_machines $m &
+    install_machines $m || echo "$m" >> $status_file &
   done
   wait
+  failures=$(wc -l $status_file | sed 's/ .*//')
+  if [[ $failures -ne 0 ]]; then
+    printf "Install failed for machines:\n$(cat $status_file)"
+    rm $status_file
+    exit 1
+  fi
+  rm -f $status_file
+  trap - EXIT
 }
 
 ########################################################################
