@@ -47,12 +47,12 @@ module Bcpc_Hadoop
       lookup_type = type_strategy[type] or raise TypeError, "Unknown type #{type}"
 
       # expected raw output will be akin to:
-      # dn: CN=Dude,OU=Bowlers,OU=Groups,OU=domain,DC=example,DC=com
-      # memberOf: CN=white-russian_drinkers,OU=Groups,OU=OU=UNIX,DC=domain,DC=example,DC=com
-      # memberOf: CN=users,OU=Groups,OU=UNIX,DC=domain,DC=example,DC=com
+      # dn: CN=Dude,OU=Bowlers,OU=Groups,OU=bcpc,DC=example,DC=com
+      # memberOf: CN=white-russian_drinkers,OU=Groups,OU=OU=UNIX,DC=bcpc,DC=example,DC=com
+      # memberOf: CN=users,OU=Groups,OU=UNIX,DC=bcpc,DC=example,DC=com
       #
-      # dn: CN=Walter,OU=Bowlers,OU=Groups,OU=domain,DC=example,DC=com
-      # memberOf: CN=users,OU=Groups,OU=UNIX,DC=domain,DC=example,DC=com
+      # dn: CN=Walter,OU=Bowlers,OU=Groups,OU=bcpc,DC=example,DC=com
+      # memberOf: CN=users,OU=Groups,OU=UNIX,DC=bcpc,DC=example,DC=com
       cmd = shell_out!(lookup_type % {group: group, basedn: basedn, attr: attr}, {:returns => [0]})
 
       accts = cmd.stdout.each_line.select{ |l| l.start_with?(attr + ":") }
