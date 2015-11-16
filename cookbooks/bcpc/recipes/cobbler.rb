@@ -17,6 +17,20 @@
 # limitations under the License.
 #
 
+node.override['cobbler']['source']['dir'] = ::Dir.mktmpdir
+
+directory node.override['cobbler']['source']['dir'] do
+  action :nothing
+end
+
+ruby_block 'trigger_tmp_dir_removal' do
+  block do
+  end
+  notifies :delete, "directory[#{node['cobbler']['source']['dir']}]", :delayed
+end
+
+include_recipe 'cobblerd::cobbler_source'
+
 require 'digest/sha2'
 require 'chef-vault'
 
