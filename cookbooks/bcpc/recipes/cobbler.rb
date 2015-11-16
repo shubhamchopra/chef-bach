@@ -20,9 +20,9 @@
 require 'digest/sha2'
 require 'chef-vault'
 
-make_config('cobbler-web-user', "cobbler")
+make_config('cobbler-web-user', 'cobbler')
 
-create_databag("os")
+create_databag('os')
 
 # backward compatibility
 web_passwd = get_config('cobbler-web-password')
@@ -34,9 +34,9 @@ if root_passwd.nil?
   root_passwd = secure_password
 end
 
-chef_vault_secret "cobbler" do
+chef_vault_secret 'cobbler' do
   data_bag 'os'
-  raw_data({ 'web-password' => web_passwd, 'root-password' => root_passwd, 'root-password-salted' => root_passwd.crypt("$6$" + rand(36**8).to_s(36)) })
+  raw_data({ 'web-password' => web_passwd, 'root-password' => root_passwd, 'root-password-salted' => root_passwd.crypt('$6$' + rand(36**8).to_s(36)) })
   admins node[:fqdn]
   search '*:*'
   action :nothing
@@ -45,35 +45,38 @@ end.run_action(:create_if_missing)
 node.default[:cobbler][:web_username] = get_config('cobbler-web-user')
 node.default[:cobbler][:web_password] = get_config( 'web-password', 'cobbler', 'os')
 
-package "isc-dhcp-server"
+package 'isc-dhcp-server'
 
-include_recipe "cobblerd::web"
+include_recipe 'cobblerd::web'
+include_recipe 'cobblerd::syslinux_package'
 
-template "/etc/cobbler/settings" do
-    source "cobbler.settings.erb"
+template '/etc/cobbler/settings' do
+    source 'cobbler.settings.erb'
     mode 00644
-    notifies :restart, "service[cobbler]", :delayed
+    notifies :restart, "service[#{node['cobbler']['service']['name']}]", :delayed
 end
 
-template "/etc/cobbler/dhcp.template" do
-    source "cobbler.dhcp.template.erb"
+template '/etc/cobbler/dhcp.template' do
+    source 'cobbler.dhcp.template.erb'
     mode 00644
     variables( :range => node[:bcpc][:bootstrap][:dhcp_range],
                :subnet => node[:bcpc][:bootstrap][:dhcp_subnet] )
-    notifies :restart, "service[cobbler]", :delayed
+    notifies :restart, "service[#{node['cobbler']['service']['name']}]", :delayed
 end
 
-cobbler_image 'ubuntu-12.04-mini' do
-  source "#{get_binary_server_url}/ubuntu-12.04-mini.iso"
-  os_version 'precise'
+include_recipe 'cobblerd::default'
+
+cobbler_image 'ubuntu-14.04-mini' do
+  source "#{get_binary_server_url}/ubuntu-14.04-mini.iso"
+  os_version 'trusty'
   os_breed 'ubuntu'
 end
 
-cobbler_profile "bcpc_host" do
-  kickstart "cobbler.bcpc_ubuntu_host.preseed"
-  distro "ubuntu-12.04-mini-x86_64"
+cobbler_profile 'bcpc_host' do
+  kickstart 'cobbler.bcpc_ubuntu_host.preseed'
+  distro 'ubuntu-14.04-mini-x86_64'
 end
 
-service "isc-dhcp-server" do
+service 'isc-dhcp-server' do
     action [ :enable, :start ]
 end
